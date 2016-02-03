@@ -1,14 +1,17 @@
 package main
 
 import (
-	"io"
+	"html/template"
+	"log"
 	"net/http"
 )
 
 func quote(res http.ResponseWriter, req *http.Request) {
-	io.WriteString(res, "'Placeholder Quote'\n")
-	io.WriteString(res, " -Me\n")
-	io.WriteString(res, "Matthew Morado")
+	tpl, err := template.ParseFiles("index.html")
+	if err != nil {
+		log.Fatalln(err)
+	}
+	tpl.Execute(res, nil)
 }
 
 func main() {
