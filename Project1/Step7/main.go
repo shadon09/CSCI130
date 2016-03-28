@@ -30,7 +30,6 @@ func index(res http.ResponseWriter, req *http.Request) {
 		src, hdr, err := req.FormFile("data")
 		if err != nil {
 			log.Println("error uploading photo: ", err)
-			// TODO: create error page to show user
 		}
 		cookie = uploadPhoto(src, hdr, cookie)
 		http.SetCookie(res, cookie)
@@ -69,7 +68,6 @@ func genCookie(res http.ResponseWriter, req *http.Request) *http.Cookie {
 		http.SetCookie(res, cookie)
 	}
 
-	// make sure set cookie uses our current structure
 	if strings.Count(cookie.Value, "|") != 2 {
 		cookie = newVisitor()
 		http.SetCookie(res, cookie)
