@@ -35,7 +35,6 @@ func index(res http.ResponseWriter, req *http.Request) {
 		src, _, err := req.FormFile("data")
 		if err != nil {
 			log.Errorf(ctx, "ERROR index req.FormFile: %s", err)
-			// TODO: create error page to show user
 			http.Redirect(res, req, `/?id=`+id, http.StatusSeeOther)
 			return
 		}
