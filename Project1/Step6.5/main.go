@@ -19,7 +19,7 @@ func main() {
 }
 
 func index(res http.ResponseWriter, req *http.Request){
-	cookie, err := req.Cookie("session")
+	cookie, err := req.Cookie("session-fino")
 	if err != nil{
 		cookie = newVisitor(res,req)
 		http.SetCookie(res, cookie)

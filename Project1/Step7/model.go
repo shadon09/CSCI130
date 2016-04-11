@@ -1,17 +1,17 @@
 package main
 
-import (
+import(
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"log"
-	"net/http"
 	"strings"
+	"net/http"
+	"log"
 )
 
 type model struct {
-	Name     string
-	State    bool
+	Name string
+	State bool
 	Pictures []string
 }
 
@@ -19,17 +19,15 @@ func Model(c *http.Cookie) model {
 	xs := strings.Split(c.Value, "|")
 	usrData := xs[1]
 
-	// decode from base64
 	bs, err := base64.URLEncoding.DecodeString(usrData)
-	if err != nil {
+	if err != nil{
 		log.Println("Error decoding base64", err)
 	}
 
-	// unmarshal from JSON
 	var m model
 	err = json.Unmarshal(bs, &m)
-	if err != nil {
-		fmt.Println("error unmarshalling: ", err)
+	if err != nil{
+		fmt.Printf("error unmarshalling: %v", err)
 	}
 	return m
 }
