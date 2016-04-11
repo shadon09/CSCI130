@@ -2,35 +2,30 @@ package main
 
 import (
 	"html/template"
-	"log"
 	"net/http"
+	"log"
 	"strings"
 )
 
 var tpl *template.Template
 
-func init() {
+func init(){
 	tpl, _ = template.ParseGlob("templates/*.html")
 }
 
 func main() {
+	
 	http.HandleFunc("/", index)
 	http.HandleFunc("/login", login)
 	http.HandleFunc("/logout", logout)
 	http.Handle("/favicon.ico", http.NotFoundHandler())
 	fs := http.FileServer(http.Dir("assets"))
 	http.Handle("/imgs/", fs)
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":8080",nil)
 }
 
-func index(res http.ResponseWriter, req *http.Request) {
-
-	cookie, err := req.Cookie("login")
-	if err != nil {
-		http.Redirect(res, req, "/login", 302)
-	}
+func index(res http.ResponseWriter, req *http.Request){
 	cookie := genCookie(res, req)
-
 	if req.Method == "POST" {
 		src, hdr, err := req.FormFile("data")
 		if err != nil {
@@ -39,22 +34,13 @@ func index(res http.ResponseWriter, req *http.Request) {
 		cookie = uploadPhoto(src, hdr, cookie)
 		http.SetCookie(res, cookie)
 	}
-
 	m := Model(cookie)
 	tpl.ExecuteTemplate(res, "index.html", m)
 }
 
-func logout(res http.ResponseWriter, req *http.Request) {
-	cookie := newVisitor("session-id")
-	http.SetCookie(res, cookie)
-	http.Redirect(res, req, "/", 302)
-}
-
-func login(res http.ResponseWriter, req *http.Request) {
-
-	cookie := genLogCookie(res, req)
-
-	if req.Method == "POST" && req.FormValue("password") == "secret" {
+func login(res http.ResponseWriter, req *http.Request){
+	cookie := genCookie(res, req)
+	if req.Method == "POST" && req.FormValue("password") == "secret"{
 		m := Model(cookie)
 		m.State = true
 		m.Name = req.FormValue("name")
@@ -62,7 +48,7 @@ func login(res http.ResponseWriter, req *http.Request) {
 		xs := strings.Split(cookie.Value, "|")
 		id := xs[0]
 
-		cookie := currentVisitor(m, id, "login")
+		cookie := currentVisitor(m, id)
 		http.SetCookie(res, cookie)
 
 		http.Redirect(res, req, "/", 302)
@@ -71,43 +57,25 @@ func login(res http.ResponseWriter, req *http.Request) {
 	tpl.ExecuteTemplate(res, "login.html", nil)
 }
 
-func genLogCookie(res http.ResponseWriter, req *http.Request) *http.Cookie {
-	cookie, err := req.Cookie("login")
-	if err != nil {
-		cookie = newVisitor("login")
-		http.SetCookie(res, cookie)
-	}
-
-	if strings.Count(cookie.Value, "|") != 2 {
-		cookie = newVisitor("login")
-		http.SetCookie(res, cookie)
-	}
-
-	if tampered(cookie.Value) {
-		cookie = newVisitor("login")
-		http.SetCookie(res, cookie)
-	}
-
-	return cookie
+func logout(res http.ResponseWriter, req *http.Request){
+	cookie := newVisitor()
+	http.SetCookie(res, cookie)
+	http.Redirect(res, req, "/", 302)
 }
 
-func genCookie(res http.ResponseWriter, req *http.Request) *http.Cookie {
-
-	cookie, err := req.Cookie("session-id")
-	if err != nil {
-		cookie = newVisitor("session-id")
+func genCookie(res http.ResponseWriter, req *http.Request) *http.Cookie{
+	cookie, err := req.Cookie("session-fino")
+	if err != nil{
+		cookie = newVisitor()
 		http.SetCookie(res, cookie)
 	}
-
-	if strings.Count(cookie.Value, "|") != 2 {
-		cookie = newVisitor("session-id")
+	if strings.Count(cookie.Value, "|") != 2{
+		cookie = newVisitor()
 		http.SetCookie(res, cookie)
 	}
-
-	if tampered(cookie.Value) {
-		cookie = newVisitor("session-id")
+	if tampered(cookie.Value){
+		cookie = newVisitor()
 		http.SetCookie(res, cookie)
 	}
-
 	return cookie
 }

@@ -2,31 +2,30 @@ package main
 
 import (
 	"html/template"
-	"log"
 	"net/http"
+	"log"
 	"strings"
 )
 
 var tpl *template.Template
 
-func init() {
+func init(){
 	tpl, _ = template.ParseGlob("templates/*.html")
 }
 
 func main() {
+	
 	http.HandleFunc("/", index)
 	http.HandleFunc("/login", login)
 	http.HandleFunc("/logout", logout)
 	http.Handle("/favicon.ico", http.NotFoundHandler())
 	fs := http.FileServer(http.Dir("assets"))
 	http.Handle("/imgs/", fs)
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":8080",nil)
 }
 
-func index(res http.ResponseWriter, req *http.Request) {
-
+func index(res http.ResponseWriter, req *http.Request){
 	cookie := genCookie(res, req)
-
 	if req.Method == "POST" {
 		src, hdr, err := req.FormFile("data")
 		if err != nil {
@@ -35,22 +34,13 @@ func index(res http.ResponseWriter, req *http.Request) {
 		cookie = uploadPhoto(src, hdr, cookie)
 		http.SetCookie(res, cookie)
 	}
-
 	m := Model(cookie)
 	tpl.ExecuteTemplate(res, "index.html", m)
 }
 
-func logout(res http.ResponseWriter, req *http.Request) {
-	cookie := newVisitor()
-	http.SetCookie(res, cookie)
-	http.Redirect(res, req, "/", 302)
-}
-
-func login(res http.ResponseWriter, req *http.Request) {
-
+func login(res http.ResponseWriter, req *http.Request){
 	cookie := genCookie(res, req)
-
-	if req.Method == "POST" && req.FormValue("password") == "secret" {
+	if req.Method == "POST" && req.FormValue("password") == "secret"{
 		m := Model(cookie)
 		m.State = true
 		m.Name = req.FormValue("name")
@@ -67,23 +57,25 @@ func login(res http.ResponseWriter, req *http.Request) {
 	tpl.ExecuteTemplate(res, "login.html", nil)
 }
 
-func genCookie(res http.ResponseWriter, req *http.Request) *http.Cookie {
+func logout(res http.ResponseWriter, req *http.Request){
+	cookie := newVisitor()
+	http.SetCookie(res, cookie)
+	http.Redirect(res, req, "/", 302)
+}
 
-	cookie, err := req.Cookie("session-id")
-	if err != nil {
+func genCookie(res http.ResponseWriter, req *http.Request) *http.Cookie{
+	cookie, err := req.Cookie("session-fino")
+	if err != nil{
 		cookie = newVisitor()
 		http.SetCookie(res, cookie)
 	}
-
-	if strings.Count(cookie.Value, "|") != 2 {
+	if strings.Count(cookie.Value, "|") != 2{
 		cookie = newVisitor()
 		http.SetCookie(res, cookie)
 	}
-
-	if tampered(cookie.Value) {
+	if tampered(cookie.Value){
 		cookie = newVisitor()
 		http.SetCookie(res, cookie)
 	}
-
 	return cookie
 }

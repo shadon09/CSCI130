@@ -1,27 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
-{{if .State}}
-    <h1>ADD PHOTO</h1>
-    <form method="POST" enctype="multipart/form-data">
-        <input type="file" name="data">
-        <input type="submit">
-    </form>
-    <br>
-    <h1>{{.Name}}'s Pictures</h1>
-    <a href="/logout">Log Out</a>
-    <br>
-        {{range .Pictures}}
-        <img src="/imgs/{{.}}"><br>
-        {{end}}
-    <br>
-{{else}}
-    <a href="/login">Please Login</a>
-{{end}}
-
-</body>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Title</title>
+	</head>
+	<body>
+	{{if .State}}
+		<a href="/logout">Log Out</a><br>
+		<h1>Add Image</h1>
+		<form method="POST" enctype="multipart/form-data">
+			<input type="file" name="data">
+			<input type="submit">
+		</form>
+		<p>
+			{{range .Pictures}}
+				<img src="/imgs/{{.}}"><br>
+			{{end}}
+		</p>
+	{{else}}
+		<a href="/login">Please login</a>
+	{{end}}
+	</body>
 </html>
