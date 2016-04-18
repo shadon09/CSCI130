@@ -13,7 +13,7 @@ import(
 	"html/template"
 )
 
-const bucket = "learning-1130.appspot.com"
+const bucket = "affable-alpha-127119"
 
 var tpl *template.Template
 

@@ -15,7 +15,7 @@ func init() {
 	http.HandleFunc("/", handler)
 }
 
-const gcsBucket = "learning-1130.appspot.com"
+const gcsBucket = "affable-alpha-127119"
 
 type demo struct {
 	ctx    context.Context
