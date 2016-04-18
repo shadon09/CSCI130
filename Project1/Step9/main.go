@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
 	"log"
@@ -14,7 +15,6 @@ func init(){
 }
 
 func main() {
-	
 	http.HandleFunc("/", index)
 	http.HandleFunc("/login", login)
 	http.HandleFunc("/logout", logout)
@@ -27,6 +27,7 @@ func main() {
 func index(res http.ResponseWriter, req *http.Request){
 	cookie := genCookie(res, req)
 	if req.Method == "POST" {
+		fmt.Printf("Form Data: %v", req.PostFormValue("data"))
 		src, hdr, err := req.FormFile("data")
 		if err != nil {
 			log.Println("error uploading photo: ", err)

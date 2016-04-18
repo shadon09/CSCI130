@@ -13,7 +13,7 @@ import (
 
 func uploadPhoto(src multipart.File, hdr *multipart.FileHeader, c *http.Cookie) *http.Cookie {
 	defer src.Close()
-	fName := getSha(src) + ".jpg"
+	fName := getSha(src) + filepath.Ext(hdr.Filename)
 	wd, _ := os.Getwd()
 	path := filepath.Join(wd, "assets", "imgs", fName)
 	dst, _ := os.Create(path)

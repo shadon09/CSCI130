@@ -13,7 +13,7 @@ func init(){
 }
 
 func index(res http.ResponseWriter, req *http.Request){
-	html := ""
+	html := ``
 	//Build Cookie
 	id, _ := uuid.NewV4()
 	cookie := &http.Cookie{
@@ -32,16 +32,16 @@ func index(res http.ResponseWriter, req *http.Request){
 	memcache.Set(ctx,&item)
 
 	//Get uuid from cookie
-	cookie, _ = req.Cookie("my-cookie")
-	if cookie != nil {
-		 html += "UUID from cookie: " + cookie.Value + "<br>"
+	cookieGet, _ := req.Cookie("my-cookie")
+	if cookieGet != nil {
+		 html += `UUID from cookie: ` + cookieGet.Value + `<br>`
 	}
 
 	//Get uuid and value from memcache
 	ctx = appengine.NewContext(req)
 	item0, _ := memcache.Get(ctx, id.String())
 	if item0 != nil {
-		html += "Value from Memcache using uuid: " + string(item0.Value) + "<br>"
+		html += `Value from Memcache using uuid: ` + string(item0.Value) + `<br>`
 	}
 	res.Header().Set("Content-Type", "text/html; charset=utf-8")
 	fmt.Fprint(res, html)

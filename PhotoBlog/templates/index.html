@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Title</title>
+	</head>
+	<body>
+	{{if .State}}
+		<a href="/logout">Log Out</a><br>
+		<h1>Add Image</h1>
+		<form method="POST" enctype="multipart/form-data">
+			<input type="file" name="data" multiple>
+			<input type="submit">
+		</form>
+		<div style="width:100%">
+		<p>
+			{{range .Pictures}}
+				<a href="{{.}}"><img width="100" height="100" src="{{.}}"></a>
+			{{end}}
+		</p>
+		</div>
+	{{else}}
+		<a href="/login">Please login</a>
+	{{end}}
+	</body>
+</html>
